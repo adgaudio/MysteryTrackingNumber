@@ -17,9 +17,7 @@ public class FedExExpress extends FedExBase {
     @Override
     protected Boolean hasValidCheckDigit(String trackingNumber) {
         Matcher m = super.regex.matcher(trackingNumber);
-        if (!m.matches()) {
-            return false;
-        }
+        m.matches(); m.groupCount();
         char[] seq1 = m.group(1).toCharArray();
         int[] seq2 = {3,1,7,3,1,7,3,1,7,3,1};
         int total = 0;
