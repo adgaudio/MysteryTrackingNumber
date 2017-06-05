@@ -22,7 +22,7 @@ public class OnTrac extends Courier {
         int v = Character.isDigit(seq[i]) ?
           Character.getNumericValue(seq[i]) :
           (((int) seq[i]) - 3) % 10;
-        x += (v % 2 == 1) ? 2*v : v;
+        x += (i % 2 == 1) ? 2*v : v;
       }
       x = x % 10;
       if (x != 0) {
