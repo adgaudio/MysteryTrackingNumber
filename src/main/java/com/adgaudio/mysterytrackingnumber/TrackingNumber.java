@@ -8,11 +8,10 @@ import java.util.List;
 public class TrackingNumber {
     public Courier courier;
     public String trackingNumber;
-    
+
     private static List<Courier> couriers = Arrays.asList(
-            new DhlExpressAir()
-            );
-    
+            new DhlExpressAir(), new DhlExpress(), new FedExExpress(), new FedExSmartPost());
+
     public TrackingNumber(String trackingNumber, Courier courier) {
         this.trackingNumber = trackingNumber;
         this.courier = courier;
@@ -21,12 +20,16 @@ public class TrackingNumber {
     public static TrackingNumber parse(String trackingNumber) {
         for (Courier c : couriers) {
             if (c.isTrackingNumberValid(trackingNumber)) {
-                return new TrackingNumber(trackingNumber, c);  // note: possible issue if multiple couriers match the same number
+                return new TrackingNumber(trackingNumber, c); // note: possible
+                                                              // issue if
+                                                              // multiple
+                                                              // couriers match
+                                                              // the same number
             }
         }
         return null;
     }
-    
+
     public static List<TrackingNumber> filterAndParseTrackingNumbers(Collection<String> barcodes) {
         List<TrackingNumber> res = new ArrayList<>();
         for (String s : barcodes) {
