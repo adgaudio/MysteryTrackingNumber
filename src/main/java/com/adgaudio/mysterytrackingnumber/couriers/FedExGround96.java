@@ -1,4 +1,4 @@
-package com.adgaudio.mysterytrackingnumber;
+package com.adgaudio.mysterytrackingnumber.couriers;
 
 public class FedExGround96 extends FedExBase {
 

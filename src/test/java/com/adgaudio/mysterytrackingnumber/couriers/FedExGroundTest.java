@@ -1,7 +1,11 @@
-package com.adgaudio.mysterytrackingnumber;
+package com.adgaudio.mysterytrackingnumber.couriers;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.adgaudio.mysterytrackingnumber.Courier;
+import com.adgaudio.mysterytrackingnumber.CourierTest;
+import com.adgaudio.mysterytrackingnumber.couriers.FedExGround;
 
 
 public class FedExGroundTest extends CourierTest {

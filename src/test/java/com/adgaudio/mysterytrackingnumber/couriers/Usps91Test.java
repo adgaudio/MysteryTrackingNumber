@@ -1,7 +1,11 @@
-package com.adgaudio.mysterytrackingnumber;
+package com.adgaudio.mysterytrackingnumber.couriers;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.adgaudio.mysterytrackingnumber.Courier;
+import com.adgaudio.mysterytrackingnumber.CourierTest;
+import com.adgaudio.mysterytrackingnumber.couriers.Usps91;
 
 
 public class Usps91Test extends CourierTest {
@@ -9,7 +13,7 @@ public class Usps91Test extends CourierTest {
     @Override
     public List<String> getValidTrackingNumbers() {
         return Arrays.asList(
-            "420221539101026837331000039521"
+            "420221539101026837331000039521", "9101026837331000039521"
             );
     }
 

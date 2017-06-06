@@ -13,9 +13,9 @@ import org.junit.Test;
 
 public class TrackingNumberTest {
     List<String> validTrackingNumbers = Arrays.asList(
-            "73891051146", "3318810025");
+            "73891051146", "3318810025", "986578788855");
     List<String> courierNames = Arrays.asList(
-            "DHL Express Air", "DHL Express");
+            "DHL Express Air", "DHL Express", "FedEx Express");
 
     @Test
     public void testParseInvalid() {

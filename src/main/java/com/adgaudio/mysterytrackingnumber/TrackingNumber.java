@@ -5,12 +5,29 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.adgaudio.mysterytrackingnumber.couriers.DhlExpress;
+import com.adgaudio.mysterytrackingnumber.couriers.DhlExpressAir;
+import com.adgaudio.mysterytrackingnumber.couriers.FedExExpress;
+import com.adgaudio.mysterytrackingnumber.couriers.FedExGround;
+import com.adgaudio.mysterytrackingnumber.couriers.FedExGround18;
+import com.adgaudio.mysterytrackingnumber.couriers.FedExGround96;
+import com.adgaudio.mysterytrackingnumber.couriers.FedExSmartPost;
+import com.adgaudio.mysterytrackingnumber.couriers.OnTrac;
+import com.adgaudio.mysterytrackingnumber.couriers.Ups;
+import com.adgaudio.mysterytrackingnumber.couriers.Usps13;
+import com.adgaudio.mysterytrackingnumber.couriers.Usps20;
+import com.adgaudio.mysterytrackingnumber.couriers.Usps91;
+
 public class TrackingNumber {
     public Courier courier;
     public String trackingNumber;
 
     private static List<Courier> couriers = Arrays.asList(
-            new DhlExpressAir(), new DhlExpress(), new FedExExpress(), new FedExSmartPost());
+            new DhlExpressAir(), new DhlExpress(), new FedExExpress(),
+            new FedExGround(), new FedExGround18(), new FedExGround96(), new FedExSmartPost(),
+            new OnTrac(),
+            new Ups(),
+            new Usps13(), new Usps20(), new Usps91());
 
     public TrackingNumber(String trackingNumber, Courier courier) {
         this.trackingNumber = trackingNumber;
