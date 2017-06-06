@@ -19,7 +19,7 @@ import com.adgaudio.mysterytrackingnumber.couriers.Usps20;
 import com.adgaudio.mysterytrackingnumber.couriers.Usps91;
 
 public class TrackingNumber {
-    public Courier courier;
+    protected Courier courier;
     public String trackingNumber;
 
     private static List<Courier> couriers = Arrays.asList(
@@ -58,6 +58,14 @@ public class TrackingNumber {
         return res;
     }
 
+    public String getCourierName() {
+        return courier.getName();
+    }
+    
+    public String getTrackingUrl() {
+        return courier.getTrackingUrl(trackingNumber);
+    }
+    
     @Override
     public String toString() {
         return String.format("%s - %s", this.courier, this.trackingNumber);

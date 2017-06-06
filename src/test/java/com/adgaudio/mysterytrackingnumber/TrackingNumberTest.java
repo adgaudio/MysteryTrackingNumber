@@ -28,7 +28,8 @@ public class TrackingNumberTest {
         for (int i=0 ; i<validTrackingNumbers.size(); i++) {
             TrackingNumber tn = TrackingNumber.parse(validTrackingNumbers.get(i));
             assertNotNull("Should be a recognized tracking number: " + validTrackingNumbers.get(i), tn);
-            assertEquals(tn.courier.getName(), courierNames.get(i));
+            assertEquals(tn.getCourierName(), courierNames.get(i));
+            assertEquals(tn.getCourierName(), tn.courier.getName());
         }
     }
     
