@@ -16,7 +16,7 @@ public abstract class DhlBase extends Courier {
         StringBuilder strNum = new StringBuilder();
         for (int num : arr) 
              strNum.append(num);
-        Long x = Long.parseUnsignedLong(strNum.toString());
+        Long x = Long.parseLong(strNum.toString());
         return x % 7 == checkDigit;
     }
 
