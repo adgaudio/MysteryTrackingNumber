@@ -4,17 +4,19 @@ import java.util.ArrayList;
 
 public final class CheckDigitAlgorithms {
 
-    public static boolean mod10(ArrayList<Integer> arr, int checkDigit, int multiplier, boolean multiplyIfEven) {
+    public static boolean mod7(ArrayList<Integer> arr, int checkDigit) {
+        StringBuilder strNum = new StringBuilder();
+        for (int num : arr) 
+             strNum.append(num);
+        Long x = Long.parseLong(strNum.toString());
+        return x % 7 == checkDigit;
+    }
+    
+    public static boolean mod10(ArrayList<Integer> arr, int checkDigit, int evensMultiplier, int oddsMultiplier) {
         int x = 0;
-        int evenOrOdd;
-        if (multiplyIfEven) {
-            evenOrOdd = 0;
-        } else {
-            evenOrOdd = 1;
-        }
         int i = 0;
         for (Integer v : arr) {
-            x += (i % 2 != evenOrOdd) ? multiplier * v : v;
+            x += (i % 2 == 0) ? evensMultiplier * v : oddsMultiplier * v;
             i += 1;
         }
         x = x % 10;
@@ -24,7 +26,7 @@ public final class CheckDigitAlgorithms {
         return x == checkDigit;
     }
     
-    public static boolean sumOfProductsWithWeightingsMod11(ArrayList<Integer> seq1, int checkDigit) {
+    public static boolean s10_check_digit_algo(ArrayList<Integer> seq1, int checkDigit) {
         int[] weightings = {8,6,4,2,3,5,9,7};
         int x = 0;
         int i = 0;
@@ -42,5 +44,15 @@ public final class CheckDigitAlgorithms {
             r = 11 - r;
         }
         return r == checkDigit;
+    }
+    
+    public static boolean sumProductWithWeightingsAndModulo(ArrayList<Integer> seq1, int checkDigit, int[] weightings, int modulo1, int modulo2) {
+        int x = 0;
+        int i = 0;
+        for (int v : seq1) {
+            x += v * weightings[i];
+            i += 1;
+        }
+        return x % modulo1 % modulo2 == checkDigit;
     }
 }

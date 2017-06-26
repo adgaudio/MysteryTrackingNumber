@@ -25,7 +25,7 @@ public class RoyalMail extends Courier {
 
     @Override
     protected Boolean hasValidCheckDigit(ArrayList<Integer> seq1, int checkDigit) {
-        return CheckDigitAlgorithms.sumOfProductsWithWeightingsMod11(seq1, checkDigit);
+        return CheckDigitAlgorithms.s10_check_digit_algo(seq1, checkDigit);
     }
 
 }

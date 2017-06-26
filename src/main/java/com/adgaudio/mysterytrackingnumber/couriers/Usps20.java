@@ -17,6 +17,6 @@ public class Usps20 extends UspsBase {
 
     @Override
     protected Boolean hasValidCheckDigit(ArrayList<Integer> arr, int checkDigit) {
-        return CheckDigitAlgorithms.mod10(arr, checkDigit, 3, false);
+        return CheckDigitAlgorithms.mod10(arr, checkDigit, 3, 1);
     }
 }

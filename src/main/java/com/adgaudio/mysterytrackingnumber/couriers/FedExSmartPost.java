@@ -3,6 +3,8 @@ package com.adgaudio.mysterytrackingnumber.couriers;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms;
+
 public class FedExSmartPost extends FedExBase {
 
     @Override
@@ -22,7 +24,7 @@ public class FedExSmartPost extends FedExBase {
         if (!arr.subList(0, 2).equals(code)) {
             arr.addAll(0, code);
         }
-        return super.hasValidCheckDigit(arr, checkDigit);
+        return CheckDigitAlgorithms.mod10(arr, checkDigit, 3, 1);
     }
 
 }

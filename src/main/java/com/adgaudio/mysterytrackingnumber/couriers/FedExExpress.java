@@ -2,6 +2,8 @@ package com.adgaudio.mysterytrackingnumber.couriers;
 
 import java.util.ArrayList;
 
+import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms;
+
 public class FedExExpress extends FedExBase {
 
     @Override
@@ -16,11 +18,7 @@ public class FedExExpress extends FedExBase {
 
     @Override
     protected Boolean hasValidCheckDigit(ArrayList<Integer> seq1, int checkDigit) {
-        int[] seq2 = {3,1,7,3,1,7,3,1,7,3,1};
-        int total = 0;
-        for (int i=0; i<seq2.length; i++) {
-            total += seq1.get(i) * seq2[i];
-        }
-        return total % 11 % 10 == checkDigit;
+        int[] weightings = {3,1,7,3,1,7,3,1,7,3,1};
+        return CheckDigitAlgorithms.sumProductWithWeightingsAndModulo(seq1, checkDigit, weightings, 11, 10);
     }
 }

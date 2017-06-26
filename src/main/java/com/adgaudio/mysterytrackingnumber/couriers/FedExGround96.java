@@ -1,5 +1,9 @@
 package com.adgaudio.mysterytrackingnumber.couriers;
 
+import java.util.ArrayList;
+
+import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms;
+
 public class FedExGround96 extends FedExBase {
 
     @Override
@@ -7,4 +11,8 @@ public class FedExGround96 extends FedExBase {
     @Override
     public String getName() { return "FedEx Ground 96"; }
 
+    @Override
+    protected Boolean hasValidCheckDigit(ArrayList<Integer> arr, int checkDigit) {
+        return CheckDigitAlgorithms.mod10(arr, checkDigit, 1, 3);
+    }
 }

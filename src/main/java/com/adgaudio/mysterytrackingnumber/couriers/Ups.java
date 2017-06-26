@@ -24,6 +24,6 @@ public class Ups extends Courier {
     
     @Override
     protected Boolean hasValidCheckDigit(ArrayList<Integer> seq, int checkDigit) {
-        return CheckDigitAlgorithms.mod10(seq, checkDigit, 2, true);
+        return CheckDigitAlgorithms.mod10(seq, checkDigit, 1, 2);
     }
 }
