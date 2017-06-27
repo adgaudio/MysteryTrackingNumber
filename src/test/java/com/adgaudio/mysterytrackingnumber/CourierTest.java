@@ -12,11 +12,11 @@ public abstract class CourierTest {
 
     public abstract List<String> getValidTrackingNumbers();
     public abstract List<String> getInvalidTrackingNumbers();
-    public abstract Courier getCourierTestInstance();
+    public abstract CourierBase getCourierTestInstance();
     
     @Test
     public void testValidTrackingNumbers() {
-        Courier courier = getCourierTestInstance();
+        CourierBase courier = getCourierTestInstance();
         for (String trackingNumber : getValidTrackingNumbers()) {
             assertTrue("This Tracking Number should be valid: " + trackingNumber,
                     courier.isTrackingNumberValid(trackingNumber));
@@ -25,7 +25,7 @@ public abstract class CourierTest {
 
     @Test
     public void testInvalidTrackingNumbers() {
-        Courier courier = getCourierTestInstance();
+        CourierBase courier = getCourierTestInstance();
         for (String trackingNumber : getInvalidTrackingNumbers()) {
             assertFalse("This should be an invalid Tracking Number: " + trackingNumber,
                     courier.isTrackingNumberValid(trackingNumber));
@@ -34,7 +34,7 @@ public abstract class CourierTest {
     
     @Test
     public void testGetTrackingUrl() {
-        Courier courier = getCourierTestInstance();
+        CourierBase courier = getCourierTestInstance();
         assertNotEquals(courier.getTrackingUrlFormatter(), courier.getTrackingUrl("test"));
     }
 
