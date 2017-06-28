@@ -86,11 +86,11 @@ public class TrackingNumberTest {
         for (String courierName : fixtures.keySet()) {
             TrackingNumberTestFixtures tns = fixtures.get(courierName);
             for (String trackingNumber : tns.valid) {
-                assertEquals("A valid tracking number should be recognized",
+                assertEquals("Tracking number should be recognized: " + trackingNumber,
                         courierName, TrackingNumber.parse(trackingNumber).getCourierName());
             }
             for (String trackingNumber : tns.invalid) {
-                assertEquals("An invalid tracking number should not be recognized",
+                assertEquals("Tracking number should not be recognized: " + trackingNumber,
                         UnrecognizedCourier.class, TrackingNumber.parse(trackingNumber).courier.getClass());
             }
         }

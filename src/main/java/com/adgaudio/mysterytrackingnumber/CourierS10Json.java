@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.CheckDigitAlgo;
+import com.adgaudio.mysterytrackingnumber.SerialNumberParsers.DefaultSerialNumberParser;
+import com.adgaudio.mysterytrackingnumber.SerialNumberParsers.SerialNumberParser;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -24,8 +26,8 @@ public class CourierS10Json extends CourierBase {
         public JsonElement regex;
     }
 
-    public CourierS10Json(String name, String trackingUrl, Pattern regex, CheckDigitAlgo checkDigitAlgo) {
-        super(name, trackingUrl, regex, checkDigitAlgo);
+    public CourierS10Json(String name, String trackingUrl, Pattern regex, CheckDigitAlgo checkDigitAlgo, SerialNumberParser serialNumberParser) {
+        super(name, trackingUrl, regex, checkDigitAlgo, serialNumberParser);
     }
 
     protected static Map<String, CourierS10Json> fetchCouriers() {
@@ -54,7 +56,7 @@ public class CourierS10Json extends CourierBase {
                 country.courier = country.country;
             if (!country.regex.isJsonNull()) {
                 CourierS10Json tmp = new CourierS10Json(country.courier, country.courier_url, parseRegex(country.regex),
-                        new CheckDigitAlgorithms.S10());
+                        new CheckDigitAlgorithms.S10(), new DefaultSerialNumberParser(null));
                 couriers.put(country.country_code, tmp);
             }
         }

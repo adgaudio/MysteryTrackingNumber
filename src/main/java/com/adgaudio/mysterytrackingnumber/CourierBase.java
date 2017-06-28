@@ -3,13 +3,16 @@ package com.adgaudio.mysterytrackingnumber;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.AP;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.CheckDigitAlgo;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.Mod10;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.Mod7;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.S10;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.SumProductWithWeightingsAndModulo;
+import com.adgaudio.mysterytrackingnumber.SerialNumberParsers.SerialNumberParser;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -19,6 +22,7 @@ public class CourierBase {
     public final String trackingUrl;
     protected final Pattern regex;
     protected final CheckDigitAlgo checkDigitAlgo;
+    protected final SerialNumberParser serialNumberParser;
 
     @Override
     public String toString() {
@@ -27,11 +31,12 @@ public class CourierBase {
 
     static Gson gson = new Gson();
 
-    public CourierBase(String name, String trackingUrl, Pattern regex, CheckDigitAlgo checkDigitAlgo) {
+    public CourierBase(String name, String trackingUrl, Pattern regex, CheckDigitAlgo checkDigitAlgo, SerialNumberParser serialNumberParser) {
         this.name = name;
         this.trackingUrl = trackingUrl;
         this.regex = regex;
         this.checkDigitAlgo = checkDigitAlgo;
+        this.serialNumberParser = serialNumberParser;
     }
 
     /* Internal class used for parsing JSON files */
@@ -39,7 +44,8 @@ public class CourierBase {
         public String name;
         public String tracking_url;
         public JsonElement regex;
-        JsonObject check_digit_algo;
+        public JsonObject serial_number_parser;
+        public JsonObject check_digit_algo;
         String _inherits;
     }
 
@@ -92,10 +98,30 @@ public class CourierBase {
                     gson.fromJson(check_digit_algo.get("weightings").getAsJsonArray(), int[].class),
                     check_digit_algo.get("modulo1").getAsInt(), check_digit_algo.get("modulo2").getAsInt());
             break;
+        case "always_successful":
+            checkDigitAlgo = new AP();
+            break;
         default:
             throw new RuntimeException(String.format("Invalid JSON: Unrecognized check_digit_algo: %s",
                     check_digit_algo.get("name").getAsString()));
         }
         return checkDigitAlgo;
+    }
+    
+    static SerialNumberParser parseSerialNumberParser(JsonObject serial_number_parser) {
+        if (serial_number_parser == null) {
+            return new SerialNumberParsers.DefaultSerialNumberParser(null);
+        }
+        SerialNumberParser p;
+        switch (serial_number_parser.get("name").getAsString().toLowerCase()) {
+        case "default":
+            p = new SerialNumberParsers.DefaultSerialNumberParser(
+                    serial_number_parser.get("prepend").getAsString());
+            break;
+        default:
+            throw new RuntimeException(String.format("Invalid JSON: Unrecognized serial_number_parser: %s",
+                    serial_number_parser.get("name")));
+        }
+        return p;
     }
 }

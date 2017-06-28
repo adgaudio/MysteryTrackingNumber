@@ -99,4 +99,11 @@ public final class CheckDigitAlgorithms {
             return sumProductWithWeightingsAndModulo(arr, checkDigit, weightings, modulo1, modulo2);
         }
     }
+    
+    static class AP implements CheckDigitAlgo {
+        @Override
+        public boolean apply(ArrayList<Integer> arr, int checkDigit) {
+            return true;
+        }
+    }
 }
