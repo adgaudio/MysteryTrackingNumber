@@ -100,7 +100,7 @@ public final class CheckDigitAlgorithms {
         }
     }
     
-    static class AP implements CheckDigitAlgo {
+    static class Dummy implements CheckDigitAlgo {
         @Override
         public boolean apply(ArrayList<Integer> arr, int checkDigit) {
             return true;

@@ -15,22 +15,17 @@ class TrackingNumberParser {
     public TrackingNumberParser(String trackingNumber) {
         this.trackingNumber = trackingNumber;
         for (CourierBase courier : couriers) {
-            match = courier.regex.matcher(trackingNumber);
-            if (match.matches()) {
+            Matcher tmpmatch = courier.regex.matcher(trackingNumber);
+
+            if (tmpmatch.matches()) {
+                match = tmpmatch;
                 if (match.groupCount() < 2) {
                     throw new RuntimeException(
                             "Code Error: the regex for your courier must include at least two capturing groups");
                 }
-                ArrayList<Integer> arr = courier.serialNumberParser.apply(match.group("SerialNumber"));
-                if (courier.name.contains("martPost")) {
-                    System.out.println(courier.name);
-                    System.out.println(match.matches());
-                    System.out.println(match.group("SerialNumber"));
-                    System.out.println(arr);
-                }
-                
-                int checkDigit = Integer.parseInt(match.group("CheckDigit"));
 
+                ArrayList<Integer> arr = courier.serialNumberParser.apply(match.group("SerialNumber"));                
+                int checkDigit = Integer.parseInt(match.group("CheckDigit"));
                 if (courier.checkDigitAlgo.apply(arr, checkDigit)) {
                     if (courier.name.equals("S10")) {
                         this.courier = couriersS10.get(match.group("CountryCode"));
@@ -39,7 +34,6 @@ class TrackingNumberParser {
                     }
                     break;
                     // NOTE: multiple couriers might match a single tracking number.
-                    // In this case, preference S10, otherwise just use last one.
                 }
             }
         }

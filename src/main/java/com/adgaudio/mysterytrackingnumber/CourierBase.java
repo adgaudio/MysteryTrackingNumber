@@ -3,11 +3,10 @@ package com.adgaudio.mysterytrackingnumber;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Map;
 import java.util.regex.Pattern;
 
-import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.AP;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.CheckDigitAlgo;
+import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.Dummy;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.Mod10;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.Mod7;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.S10;
@@ -88,18 +87,12 @@ public class CourierBase {
             checkDigitAlgo = new S10();
             break;
         case "sum_product_with_weightings_and_modulo":
-
-            int[] x = gson.fromJson(check_digit_algo.get("weightings"), int[].class);
-            if (x == null) {
-                throw new RuntimeException("bug"); // TODO remove
-            }
-
             checkDigitAlgo = new SumProductWithWeightingsAndModulo(
                     gson.fromJson(check_digit_algo.get("weightings").getAsJsonArray(), int[].class),
                     check_digit_algo.get("modulo1").getAsInt(), check_digit_algo.get("modulo2").getAsInt());
             break;
-        case "always_successful":
-            checkDigitAlgo = new AP();
+        case "dummy":
+            checkDigitAlgo = new Dummy();
             break;
         default:
             throw new RuntimeException(String.format("Invalid JSON: Unrecognized check_digit_algo: %s",
@@ -115,8 +108,9 @@ public class CourierBase {
         SerialNumberParser p;
         switch (serial_number_parser.get("name").getAsString().toLowerCase()) {
         case "default":
+            JsonElement prepend = serial_number_parser.get("prepend");
             p = new SerialNumberParsers.DefaultSerialNumberParser(
-                    serial_number_parser.get("prepend").getAsString());
+                    (prepend == null) ? null : prepend.getAsString());
             break;
         default:
             throw new RuntimeException(String.format("Invalid JSON: Unrecognized serial_number_parser: %s",

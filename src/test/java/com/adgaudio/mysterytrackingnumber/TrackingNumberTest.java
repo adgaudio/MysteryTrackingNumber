@@ -3,7 +3,7 @@ package com.adgaudio.mysterytrackingnumber;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +24,8 @@ public class TrackingNumberTest {
 
     @Test
     public void testParseInvalid() {
-        assertNull(TrackingNumber.parse("invalid tracking number"));
-        assertNull(TrackingNumber.parse(""));
+        assertTrue(TrackingNumber.parse("invalid tracking number").courier instanceof UnrecognizedCourier);
+        assertTrue(TrackingNumber.parse("").courier instanceof UnrecognizedCourier);
     }
 
     @Test
@@ -66,32 +66,42 @@ public class TrackingNumberTest {
         TrackingNumber tn0 = TrackingNumber.parse(validTrackingNumbers.get(0));
         assertEquals(tn0.hashCode(), validTrackingNumbers.get(0).hashCode());
     }
-    
+
     public class TrackingNumberTestFixtures {
         String[] valid;
         String[] invalid;
     }
-    
+
     @Test
     public void testJsonFixtures() {
 
+        JsonObject fixtures1 = new JsonParser().parse(CourierBase.openFile("./tracking_number_data/test_couriers.json"))
+                .getAsJsonObject();
 
-        JsonObject fixtures1 = new JsonParser().parse(CourierBase.openFile(
-                "./tracking_number_data/test_couriers.json")).getAsJsonObject();
-
-        Map<String, TrackingNumberTestFixtures> fixtures = new Gson().fromJson(
-                fixtures1, new TypeToken<Map<String, TrackingNumberTestFixtures>>() {
+        Map<String, TrackingNumberTestFixtures> fixtures = new Gson().fromJson(fixtures1,
+                new TypeToken<Map<String, TrackingNumberTestFixtures>>() {
                 }.getType());
-        
+
         for (String courierName : fixtures.keySet()) {
             TrackingNumberTestFixtures tns = fixtures.get(courierName);
             for (String trackingNumber : tns.valid) {
-                assertEquals("Tracking number should be recognized: " + trackingNumber,
-                        courierName, TrackingNumber.parse(trackingNumber).getCourierName());
+                TrackingNumberParser tnp = new TrackingNumberParser(trackingNumber);
+                assertTrue(courierName + " regex should be valid: " + trackingNumber, tnp.match != null);
+                if (courierName.equals("S10")) {
+                    assertTrue(courierName + " check digit should be valid: " + trackingNumber,
+                            tnp.courier instanceof CourierS10Json);
+                    assertEquals("Tracking number should be recognized: " + trackingNumber,
+                            tnp.courier.name, TrackingNumber.parse(trackingNumber).courier.name);
+                } else {
+                    assertEquals(courierName + " check digit should be valid: " + trackingNumber, courierName,
+                            tnp.courier.name);
+                    assertEquals("Tracking number should be recognized: " + trackingNumber, courierName,
+                            TrackingNumber.parse(trackingNumber).getCourierName());
+                }
             }
             for (String trackingNumber : tns.invalid) {
-                assertEquals("Tracking number should not be recognized: " + trackingNumber,
-                        UnrecognizedCourier.class, TrackingNumber.parse(trackingNumber).courier.getClass());
+                assertNotEquals("Tracking number should not be recognized: " + trackingNumber, courierName,
+                        TrackingNumber.parse(trackingNumber).courier.name);
             }
         }
 
