@@ -19,7 +19,7 @@ public class CourierJson extends CourierBase {
     }
 
     protected static List<CourierJson> fetchCouriers() {
-        String filepathCouriersJson = "tracking_number_data/couriers.json";
+        String filepathCouriersJson = "/couriers.json";
         return fetchCouriers(filepathCouriersJson);
     }
 
