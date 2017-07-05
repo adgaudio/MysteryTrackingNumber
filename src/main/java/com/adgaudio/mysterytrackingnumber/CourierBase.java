@@ -59,7 +59,11 @@ public class CourierBase {
 	static Pattern parseRegex(JsonElement regex) {
 		String tmpRegex;
 		if (regex.isJsonArray()) {
-			tmpRegex = String.join("", gson.fromJson(regex, String[].class));
+			StringBuilder builder = new StringBuilder();
+			for(String s : gson.fromJson(regex, String[].class)) {
+			    builder.append(s);
+			}
+			tmpRegex = builder.toString();
 		} else {
 			tmpRegex = regex.getAsString();
 		}
