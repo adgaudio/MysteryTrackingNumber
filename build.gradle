@@ -24,14 +24,7 @@ dependencies {
 sourceSets {
   main {
     resources {
-          srcDirs = ['src/main/resources', 'tracking_number_data']
-          include '*.json'
-          exclude 'test_*.json'
-    }
-  }
-  test {
-    resources {
-          srcDirs = ['src/main/resources', 'tracking_number_data']
+          srcDirs = ['tracking_number_data']
           include '*.json'
     }
   }
