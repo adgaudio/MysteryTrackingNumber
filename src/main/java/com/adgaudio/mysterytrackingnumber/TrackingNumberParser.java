@@ -8,8 +8,8 @@ import java.util.regex.Matcher;
 class TrackingNumberParser {
     public final String trackingNumber;
     protected Matcher match;
-    private final List<CourierJson> couriers = CourierJson.fetchCouriers();
-    private final Map<String, CourierS10Json> couriersS10 = CourierS10Json.fetchCouriers();
+    private static List<CourierJson> couriers = CourierJson.fetchCouriers();
+    private static Map<String, CourierS10Json> couriersS10 = CourierS10Json.fetchCouriers();
     public CourierBase courier;
 
     public TrackingNumberParser(String trackingNumber) {
