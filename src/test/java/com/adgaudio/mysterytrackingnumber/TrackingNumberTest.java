@@ -1,6 +1,7 @@
 package com.adgaudio.mysterytrackingnumber;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -26,6 +27,12 @@ public class TrackingNumberTest {
 	public void testParseInvalid() {
 		assertTrue(TrackingNumber.parse("invalid tracking number").courier instanceof UnrecognizedCourier);
 		assertTrue(TrackingNumber.parse("").courier instanceof UnrecognizedCourier);
+	}
+
+	@Test
+	public void testIsCourierRecognized() {
+		assertFalse(TrackingNumber.parse("").isCourierRecognized());
+		assertTrue(TrackingNumber.parse(validTrackingNumbers.get(0)).isCourierRecognized());
 	}
 
 	@Test
