@@ -2,11 +2,11 @@ package com.adgaudio.mysterytrackingnumber;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.CheckDigitAlgo;
 import com.adgaudio.mysterytrackingnumber.SerialNumberParsers.DefaultSerialNumberParser;
 import com.adgaudio.mysterytrackingnumber.SerialNumberParsers.SerialNumberParser;
+import com.google.code.regexp.Pattern;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

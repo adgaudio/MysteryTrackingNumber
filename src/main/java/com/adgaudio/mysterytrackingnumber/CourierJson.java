@@ -3,10 +3,10 @@ package com.adgaudio.mysterytrackingnumber;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.CheckDigitAlgo;
 import com.adgaudio.mysterytrackingnumber.SerialNumberParsers.SerialNumberParser;
+import com.google.code.regexp.Pattern;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;

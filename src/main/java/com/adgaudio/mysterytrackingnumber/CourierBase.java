@@ -3,7 +3,6 @@ package com.adgaudio.mysterytrackingnumber;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.regex.Pattern;
 
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.CheckDigitAlgo;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.Dummy;
@@ -12,6 +11,7 @@ import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.Mod7;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.S10;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.SumProductWithWeightingsAndModulo;
 import com.adgaudio.mysterytrackingnumber.SerialNumberParsers.SerialNumberParser;
+import com.google.code.regexp.Pattern;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
