@@ -9,14 +9,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 
 public class TrackingNumberTest {
 
@@ -74,23 +72,28 @@ public class TrackingNumberTest {
 		assertEquals(tn0.hashCode(), validTrackingNumbers.get(0).hashCode());
 	}
 
-	public class TrackingNumberTestFixtures {
+	public class Fixture2 {
 		String[] valid;
 		String[] invalid;
+	}
+	public class Fixture1 {
+		Fixture2 test_numbers;
+		String name;
 	}
 
 	@Test
 	public void testJsonFixtures() {
 
-		JsonObject fixtures1 = new JsonParser().parse(CourierBase.openFile("/test_couriers.json")).getAsJsonObject();
+		JsonArray fixtures1 = new JsonParser()
+				.parse(CourierBase.openFile("/couriers.json"))
+				.getAsJsonObject()
+				.get("couriers").getAsJsonArray();
+		Fixture1[] fixtures = new Gson().fromJson(fixtures1, Fixture1[].class);
 
-		Map<String, TrackingNumberTestFixtures> fixtures = new Gson().fromJson(fixtures1,
-				new TypeToken<Map<String, TrackingNumberTestFixtures>>() {
-				}.getType());
 
-		for (String courierName : fixtures.keySet()) {
-			TrackingNumberTestFixtures tns = fixtures.get(courierName);
-			for (String trackingNumber : tns.valid) {
+		for (Fixture1 testData : fixtures) {
+			String courierName = testData.name;
+			for (String trackingNumber : testData.test_numbers.valid) {
 				TrackingNumberParser tnp = new TrackingNumberParser(trackingNumber);
 				assertTrue(courierName + " regex should be valid: " + trackingNumber, tnp.match != null);
 				if (courierName.equals("S10")) {
@@ -105,7 +108,7 @@ public class TrackingNumberTest {
 							TrackingNumber.parse(trackingNumber).getCourierName());
 				}
 			}
-			for (String trackingNumber : tns.invalid) {
+			for (String trackingNumber : testData.test_numbers.invalid) {
 				assertNotEquals("Tracking number should not be recognized: " + trackingNumber, courierName,
 						TrackingNumber.parse(trackingNumber).courier.name);
 			}

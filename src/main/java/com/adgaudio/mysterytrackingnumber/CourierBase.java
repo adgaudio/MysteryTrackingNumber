@@ -46,7 +46,6 @@ public class CourierBase {
 		public JsonElement regex;
 		public JsonObject serial_number_parser;
 		public JsonObject check_digit_algo;
-		String _inherits;
 	}
 
 	static BufferedReader openFile(String filepath) {
@@ -67,7 +66,7 @@ public class CourierBase {
 		} else {
 			tmpRegex = regex.getAsString();
 		}
-		return Pattern.compile(tmpRegex.replaceAll("\\(\\?P<", "\\(\\?<"));
+		return Pattern.compile(tmpRegex);
 	}
 
 	/*
