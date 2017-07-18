@@ -19,7 +19,7 @@ import com.google.gson.JsonParser;
 public class TrackingNumberTest {
 
 	List<String> validTrackingNumbers = Arrays.asList("73891051146", "3318810025", "986578788855");
-	List<String> courierNames = Arrays.asList("DHL Express Air", "DHL Express", "FedEx Express");
+	List<String> courierNames = Arrays.asList("DHL Express Air", "DHL Express", "FedEx Express (13)");
 
 	@Test
 	public void testParseInvalid() {
@@ -95,13 +95,16 @@ public class TrackingNumberTest {
 			String courierName = testData.name;
 			for (String trackingNumber : testData.test_numbers.valid) {
 				TrackingNumberParser tnp = new TrackingNumberParser(trackingNumber);
-				assertTrue(courierName + " regex should be valid: " + trackingNumber, tnp.match != null);
+				assertTrue(courierName + " regex should be valid: " + trackingNumber, tnp.match.matches());
 				if (courierName.equals("S10")) {
 					assertTrue(courierName + " check digit should be valid: " + trackingNumber,
 							tnp.courier instanceof CourierS10Json);
 					assertEquals("Tracking number should be recognized: " + trackingNumber, tnp.courier.name,
 							TrackingNumber.parse(trackingNumber).courier.name);
 				} else {
+					System.out.println(courierName + " " + tnp.courier.name);
+					System.out.println(trackingNumber);
+					System.out.println(tnp.match.matches());
 					assertEquals(courierName + " check digit should be valid: " + trackingNumber, courierName,
 							tnp.courier.name);
 					assertEquals("Tracking number should be recognized: " + trackingNumber, courierName,

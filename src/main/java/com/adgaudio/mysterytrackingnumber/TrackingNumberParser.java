@@ -27,6 +27,7 @@ class TrackingNumberParser {
 
                 ArrayList<Integer> arr = courier.serialNumberParser.apply(match.group("SerialNumber"));                
                 int checkDigit = Integer.parseInt(match.group("CheckDigit"));
+                System.out.println(arr);
                 if (courier.checkDigitAlgo.apply(arr, checkDigit)) {
                     if (courier.name.equals("S10")) {
                         this.courier = couriersS10.get(match.group("CountryCode"));
