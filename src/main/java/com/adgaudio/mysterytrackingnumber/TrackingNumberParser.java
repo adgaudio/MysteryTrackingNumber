@@ -9,8 +9,8 @@ import com.google.code.regexp.Matcher;
 class TrackingNumberParser {
     public final String trackingNumber;
     protected Matcher match;
-    private static List<CourierJson> couriers = CourierJson.fetchCouriers();
-    private static Map<String, CourierS10Json> couriersS10 = CourierS10Json.fetchCouriers();
+    private static List<CourierBase> couriers = CourierBase.fetchCouriers();
+    private static Map<String, CourierBase> couriersS10 = null;
     public CourierBase courier;
 
     public TrackingNumberParser(String trackingNumber) {
@@ -27,14 +27,17 @@ class TrackingNumberParser {
 
                 ArrayList<Integer> arr = courier.serialNumberParser.apply(match.group("SerialNumber"));                
                 int checkDigit = Integer.parseInt(match.group("CheckDigit"));
-                System.out.println(arr);
                 if (courier.checkDigitAlgo.apply(arr, checkDigit)) {
                     if (courier.name.equals("S10")) {
+                    	if (couriersS10 == null) {
+                    		couriersS10 = CourierS10Json.fetchCouriers(courier);
+                    	}
                         this.courier = couriersS10.get(match.group("CountryCode"));
                     } else if (this.courier == null) {
                         this.courier = courier;
                     }
-                    break;
+                    if (this.courier != null)
+                        break;
                     // NOTE: multiple couriers might match a single tracking number.
                 }
             }

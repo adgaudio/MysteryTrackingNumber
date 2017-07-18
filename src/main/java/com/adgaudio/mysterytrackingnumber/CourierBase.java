@@ -1,8 +1,8 @@
 package com.adgaudio.mysterytrackingnumber;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.CheckDigitAlgo;
 import com.adgaudio.mysterytrackingnumber.CheckDigitAlgorithms.Dummy;
@@ -15,6 +15,8 @@ import com.google.code.regexp.Pattern;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 public class CourierBase {
 	public final String name;
@@ -22,6 +24,7 @@ public class CourierBase {
 	protected final Pattern regex;
 	protected final CheckDigitAlgo checkDigitAlgo;
 	protected final SerialNumberParser serialNumberParser;
+	protected final JsonObject additional;  // used by subclasses
 
 	@Override
 	public String toString() {
@@ -31,12 +34,45 @@ public class CourierBase {
 	static Gson gson = new Gson();
 
 	public CourierBase(String name, String trackingUrl, Pattern regex, CheckDigitAlgo checkDigitAlgo,
-			SerialNumberParser serialNumberParser) {
+			SerialNumberParser serialNumberParser, JsonObject additional) {
 		this.name = name;
 		this.trackingUrl = trackingUrl;
 		this.regex = regex;
 		this.checkDigitAlgo = checkDigitAlgo;
 		this.serialNumberParser = serialNumberParser;
+		this.additional = additional;
+	}
+
+	/* Return list of couriers we recognize */
+	protected static List<CourierBase> fetchCouriers() {
+		ArrayList<CourierBase> couriers = new ArrayList<>();
+		for (CourierJsonData courier : getCourierJsonData()) {
+			couriers.add(new CourierBase(
+					courier.name,
+					courier.tracking_url,
+					parseRegex(courier.regex),
+					parseCheckDigitAlgo(courier.check_digit_algo),
+					parseSerialNumberParser(courier.serial_number_parser),
+					courier.additional));
+		}
+		return couriers;
+	}
+	
+	/* Load JSON files from disk */
+	protected static List<CourierJsonData> getCourierJsonData() {
+		ArrayList<CourierJsonData> couriersJsonData = new ArrayList<>();
+		try {
+			for (String fp : ReadJsonFiles.getResourceFiles("/couriers")) {
+				for (CourierJsonData courier : new Gson().fromJson(new JsonParser().parse(ReadJsonFiles.openFile(fp)), CourierJsonData[].class)) {
+					couriersJsonData.add(courier);
+				}
+			}
+		} catch (JsonSyntaxException | IOException e) {
+			// this would be a bug caused by invalid JSON
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		return couriersJsonData;
 	}
 
 	/* Internal class used for parsing JSON files */
@@ -46,12 +82,7 @@ public class CourierBase {
 		public JsonElement regex;
 		public JsonObject serial_number_parser;
 		public JsonObject check_digit_algo;
-	}
-
-	static BufferedReader openFile(String filepath) {
-		InputStream in = CourierBase.class.getResourceAsStream(filepath);
-		BufferedReader br = new BufferedReader(new InputStreamReader(in));
-		return br;
+		public JsonObject additional;
 	}
 
 	/* Standard way regular expressions are parsed in our JSON data */
