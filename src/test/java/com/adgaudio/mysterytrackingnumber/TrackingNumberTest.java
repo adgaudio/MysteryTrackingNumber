@@ -99,7 +99,7 @@ public class TrackingNumberTest {
 	protected static List<Fixture1> getFixtures() {
 		ArrayList<Fixture1> fixtures = new ArrayList<>();
 		try {
-			for (String fp : ReadJsonFiles.getResourceFiles("/couriers")) {
+			for (String fp : ReadJsonFiles.getJsonFilepaths()) {
 				
 				for (Fixture1 courier : new Gson().fromJson(new JsonParser().parse(ReadJsonFiles.openFile(fp)), Fixture1[].class)) {
 					fixtures.add(courier);

@@ -62,7 +62,7 @@ public class CourierBase {
 	protected static List<CourierJsonData> getCourierJsonData() {
 		ArrayList<CourierJsonData> couriersJsonData = new ArrayList<>();
 		try {
-			for (String fp : ReadJsonFiles.getResourceFiles("/couriers")) {
+			for (String fp : ReadJsonFiles.getJsonFilepaths()) {
 				for (CourierJsonData courier : new Gson().fromJson(new JsonParser().parse(ReadJsonFiles.openFile(fp)), CourierJsonData[].class)) {
 					couriersJsonData.add(courier);
 				}

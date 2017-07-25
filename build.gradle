@@ -2,6 +2,7 @@
 apply plugin: 'java'
 // apply plugin: 'eclipse'
 
+import java.nio.file.Paths
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use jcenter for resolving your dependencies.
@@ -27,9 +28,21 @@ dependencies {
 sourceSets {
   main {
     resources {
-          srcDirs = ['tracking_number_data']
-          include 'couriers/*.json'
+          srcDirs = ['tracking_number_data', '.']
+          includes = ['couriers/*.json', 'couriers.txt']
     }
   }
 }
 
+task preBuild {
+  doFirst {
+    def sw = new StringWriter()
+    def fout = new File("couriers.txt")
+    fileTree(dir: Paths.get("tracking_number_data", "couriers"), include: '*.json')
+    .each{ File file ->
+      sw.append(Paths.get("/couriers", file.getName()).toString() + "\n");
+    }
+    fout.write(sw.toString())
+  }
+}
+compileJava.dependsOn preBuild
