@@ -5,16 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.code.regexp.Matcher;
+import com.google.code.regexp.Pattern;
 
 class TrackingNumberParser {
-    public final String trackingNumber;
-    protected Matcher match;
     private static List<CourierBase> couriers = CourierBase.fetchCouriers();
-    private static Map<String, CourierBase> couriersS10 = null;
-    public CourierBase courier;
 
-    public TrackingNumberParser(String trackingNumber) {
-        this.trackingNumber = trackingNumber;
+    public static List<CourierBase> parse(String trackingNumber) {
+        List<CourierBase> matchingCouriers = new ArrayList<>();
+        Matcher match;
+
         for (CourierBase courier : couriers) {
             Matcher tmpmatch = courier.regex.matcher(trackingNumber);
 
@@ -25,25 +24,45 @@ class TrackingNumberParser {
                             "Code Error: the regex for your courier must include at least two capturing groups");
                 }
 
-                ArrayList<Integer> arr = courier.serialNumberParser.apply(match.group("SerialNumber"));                
-                int checkDigit = Integer.parseInt(match.group("CheckDigit"));
+                ArrayList<Integer> arr = courier.serialNumberParser.apply(match.group("SerialNumber").replaceAll(" ",  ""));                
+                int checkDigit = Integer.parseInt(match.group("CheckDigit").replaceAll(" ", ""));
                 if (courier.checkDigitAlgo.apply(arr, checkDigit)) {
-                    if (courier.name.equals("S10")) {
-                    	if (couriersS10 == null) {
-                    		couriersS10 = CourierS10Json.fetchCouriers(courier);
-                    	}
-                        this.courier = couriersS10.get(match.group("CountryCode"));
-                    } else if (this.courier == null) {
-                        this.courier = courier;
-                    }
-                    if (this.courier != null)
-                        break;
-                    // NOTE: multiple couriers might match a single tracking number.
+                	CourierBase tmp = processAdditionalValidation(courier, match);
+                	if (tmp != null) {
+                		matchingCouriers.add(tmp);
+                	}
                 }
             }
         }
-        if (this.courier == null)
-            this.courier = new UnrecognizedCourier();
-        
+        return matchingCouriers;
     }
+
+	private static CourierBase processAdditionalValidation(CourierBase courier, Matcher match) {
+        if (courier.additionalValidation == null || courier.additionalValidation.exists == null)
+        	return courier;
+        Map<String, String> data = null;
+        for (String keyName : courier.additionalValidation.exists) {
+	        data = courier.additional
+	        		.get(keyName).lookup.get(match.group(courier.additional.get(keyName).regexGroupName).replaceAll("\\s+",  ""));
+        }
+        if (data == null)
+        	return null;
+
+        CourierBase rv;
+        if (courier.name.equals("S10")) {
+        	rv = new CourierBase(
+        			data.get("courier") != null ? data.get("courier") : data.get("country"),
+        			courier.name,
+					data.get("courier_url"),
+					Pattern.compile(courier.regex.standardPattern().replaceAll(
+							"(?<CountryCode>([A-Z]\\s*){2})", String.format("(?<CountryCode>(%s)", data.get("matches")))),
+					courier.checkDigitAlgo,
+					courier.serialNumberParser,
+					courier.additionalValidation,
+					courier.additional);
+        } else {
+        	rv = courier;
+        }
+        return rv;		
+	}
 }

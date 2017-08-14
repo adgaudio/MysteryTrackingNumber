@@ -1,7 +1,5 @@
 package com.adgaudio.mysterytrackingnumber;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class TrackingNumber {
@@ -14,19 +12,14 @@ public class TrackingNumber {
 	}
 
 	public static TrackingNumber parse(String trackingNumber) {
-		TrackingNumberParser p = new TrackingNumberParser(trackingNumber);
-		return new TrackingNumber(p.trackingNumber, p.courier);
-	}
-
-	public static List<TrackingNumber> filterAndParseTrackingNumbers(Collection<String> barcodes) {
-		List<TrackingNumber> res = new ArrayList<>();
-		for (String s : barcodes) {
-			TrackingNumber t = TrackingNumber.parse(s);
-			if (new UnrecognizedCourier().getClass() != t.courier.getClass()) {
-				res.add(t);
-			}
-		}
-		return res;
+		List<CourierBase> couriers = TrackingNumberParser.parse(trackingNumber);
+		if (couriers.isEmpty())
+			return new TrackingNumber(trackingNumber, new UnrecognizedCourier());
+		else if (couriers.size() == 1)
+			return new TrackingNumber(trackingNumber, couriers.get(0));
+		else
+//			throw new RuntimeException("BUG: Multiple couriers detected for tracking number: " + trackingNumber);
+			return new TrackingNumber(trackingNumber, new MultipleCouriers(couriers));
 	}
 
 	public Boolean isCourierRecognized() {

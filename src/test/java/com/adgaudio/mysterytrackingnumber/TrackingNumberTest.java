@@ -20,7 +20,7 @@ import com.google.gson.JsonSyntaxException;
 public class TrackingNumberTest {
 
 	List<String> validTrackingNumbers = Arrays.asList("73891051146", "3318810025", "986578788855");
-	List<String> courierNames = Arrays.asList("DHL Express Air", "DHL Express", "FedEx Express (13)");
+	List<String> courierNames = Arrays.asList("DHL Express Air", "DHL Express", "FedEx Express (12)");
 
 	List<String> validS10Numbers = Arrays.asList("RB123456785US", "RB123456785GB", "RB123456785CN");
 	List<String> s10CourierNames = Arrays.asList(
@@ -59,21 +59,6 @@ public class TrackingNumberTest {
 	}
 
 	@Test
-	public void testFilterAndParseTrackingNumbers() {
-		ArrayList<String> arr = new ArrayList<>();
-		arr.add("not trackingnumber");
-		arr.addAll(validTrackingNumbers);
-		arr.add(validTrackingNumbers.get(0) + " ");
-		arr.add(" " + validTrackingNumbers.get(0));
-
-		List<TrackingNumber> res = TrackingNumber.filterAndParseTrackingNumbers(arr);
-		assertEquals(res.size(), validTrackingNumbers.size());
-		for (TrackingNumber tn : res) {
-			assertNotNull("filterAndParseTrackingNumbers should never return a null value", tn);
-		}
-	}
-
-	@Test
 	public void testEquals() {
 		TrackingNumber tn0 = TrackingNumber.parse(validTrackingNumbers.get(0));
 		TrackingNumber tn1 = TrackingNumber.parse(validTrackingNumbers.get(1));
@@ -101,7 +86,9 @@ public class TrackingNumberTest {
 		try {
 			for (String fp : ReadJsonFiles.getJsonFilepaths()) {
 				
-				for (Fixture1 courier : new Gson().fromJson(new JsonParser().parse(ReadJsonFiles.openFile(fp)), Fixture1[].class)) {
+				for (Fixture1 courier : new Gson().fromJson(new JsonParser()
+						.parse(ReadJsonFiles.openFile(fp)).getAsJsonObject()
+						.getAsJsonArray("tracking_numbers"), Fixture1[].class)) {
 					fixtures.add(courier);
 				}
 			}
@@ -118,23 +105,18 @@ public class TrackingNumberTest {
 		for (Fixture1 testData : getFixtures()) {
 			String courierName = testData.name;
 			for (String trackingNumber : testData.test_numbers.valid) {
-				TrackingNumberParser tnp = new TrackingNumberParser(trackingNumber);
-				assertTrue(courierName + " regex should be valid: " + trackingNumber, tnp.match.matches());
-				if (courierName.equals("S10")) {
-					assertTrue(courierName + " check digit should be valid: " + trackingNumber,
-							tnp.courier instanceof CourierBase);
-					assertEquals("Tracking number should be recognized: " + trackingNumber, tnp.courier.name,
-							TrackingNumber.parse(trackingNumber).courier.name);
-				} else {
-					assertEquals(courierName + " check digit should be valid: " + trackingNumber, courierName,
-							tnp.courier.name);
-					assertEquals("Tracking number should be recognized: " + trackingNumber, courierName,
-							TrackingNumber.parse(trackingNumber).getCourierName());
+				// correct courier should be detected
+				List<CourierBase> results = TrackingNumberParser.parse(trackingNumber);
+								
+				Boolean courierExists = false;
+				for (CourierBase tmp : results) {
+					courierExists |= tmp.name.equals(courierName);
+					courierExists |= tmp.parentName.equals(courierName);
 				}
-			}
-			for (String trackingNumber : testData.test_numbers.invalid) {
-				assertNotEquals("Tracking number should not be recognized: " + trackingNumber, courierName,
-						TrackingNumber.parse(trackingNumber).courier.name);
+				assertTrue(courierName + " should be recognized for: " + trackingNumber, courierExists);
+				if (results.size() > 1) {
+					System.out.println("Warning: Multiple couriers matched " + trackingNumber + " - " + results);
+				}
 			}
 		}
 	}
