@@ -116,6 +116,8 @@ public class TrackingNumberTest {
 				assertTrue(courierName + " should be recognized for: " + trackingNumber, courierExists);
 				if (results.size() > 1) {
 					System.out.println("Warning: Multiple couriers matched " + trackingNumber + " - " + results);
+					assertTrue(TrackingNumber.parse(trackingNumber).isCourierRecognized());
+					System.out.println(TrackingNumber.parse(trackingNumber).courier.name);
 				}
 			}
 		}
