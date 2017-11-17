@@ -101,25 +101,43 @@ public class TrackingNumberTest {
 	}
 
 	@Test
-	public void testJsonFixtures() {
+	public void testValidJsonFixtures() {
 		for (Fixture1 testData : getFixtures()) {
 			String courierName = testData.name;
 			for (String trackingNumber : testData.test_numbers.valid) {
-				// correct courier should be detected
-				List<CourierBase> results = TrackingNumberParser.parse(trackingNumber);
-								
-				Boolean courierExists = false;
-				for (CourierBase tmp : results) {
-					courierExists |= tmp.name.equals(courierName);
-					courierExists |= tmp.parentName.equals(courierName);
-				}
-				assertTrue(courierName + " should be recognized for: " + trackingNumber, courierExists);
-				if (results.size() > 1) {
-					System.out.println("Warning: Multiple couriers matched " + trackingNumber + " - " + results);
-					assertTrue(TrackingNumber.parse(trackingNumber).isCourierRecognized());
-					System.out.println(TrackingNumber.parse(trackingNumber).courier.name);
-				}
+				fixtureTest(courierName, trackingNumber, true);
 			}
+		}
+	}
+
+	@Test
+	public void testInvalidJsonFixtures() {
+		for (Fixture1 testData : getFixtures()) {
+			String courierName = testData.name;
+			for (String trackingNumber : testData.test_numbers.invalid) {
+				fixtureTest(courierName, trackingNumber, false);
+			}
+		}
+	}
+	
+	private void fixtureTest(String courierName, String trackingNumber, Boolean testValid) {
+		// correct courier should be detected
+		List<CourierBase> results = TrackingNumberParser.parse(trackingNumber);
+						
+		Boolean courierExists = false;
+		for (CourierBase tmp : results) {
+			if (courierName.equals("S10")) {
+				courierExists |= tmp.parentName.equals(courierName);
+			} else {
+				courierExists |= tmp.name.equals(courierName);
+			}
+		}
+		assertTrue(courierName + " should " + (testValid ? "" : "not") + " be recognized for: " + trackingNumber,
+				courierExists == testValid);
+		if (results.size() > 1) {
+			System.out.println("Warning: Multiple couriers matched " + trackingNumber + " - " + results);
+			assertTrue(TrackingNumber.parse(trackingNumber).isCourierRecognized() == testValid);
+			System.out.println(TrackingNumber.parse(trackingNumber).courier.name);
 		}
 	}
 }
