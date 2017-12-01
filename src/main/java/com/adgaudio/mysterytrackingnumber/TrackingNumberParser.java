@@ -24,8 +24,13 @@ class TrackingNumberParser {
                             "Code Error: the regex for your courier must include at least two capturing groups");
                 }
 
-                ArrayList<Integer> arr = courier.serialNumberParser.apply(match.group("SerialNumber").replaceAll(" ",  ""));                
-                int checkDigit = Integer.parseInt(match.group("CheckDigit").replaceAll(" ", ""));
+                ArrayList<Integer> arr = courier.serialNumberParser.apply(match.group("SerialNumber").replaceAll(" ",  ""));   
+                Integer checkDigit;
+                if (courier.regex.groupNames().contains("CheckDigit")) {
+                	checkDigit = Integer.parseInt(match.group("CheckDigit").replaceAll(" ", ""));
+                } else {
+                	checkDigit = -1;
+                }
                 if (courier.checkDigitAlgo.apply(arr, checkDigit)) {
                 	CourierBase tmp = processAdditionalValidation(courier, match);
                 	if (tmp != null) {
