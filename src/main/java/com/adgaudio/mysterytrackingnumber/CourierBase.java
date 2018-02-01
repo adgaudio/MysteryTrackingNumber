@@ -143,6 +143,9 @@ public class CourierBase {
 	 */
 	static CheckDigitAlgo parseCheckDigitAlgo(JsonObject checksum) {
 		CheckDigitAlgo checkDigitAlgo = null;
+		if (checksum.size() == 0) {
+			return new Dummy();
+		}
 		switch (checksum.get("name").getAsString().toLowerCase()) {
 		case "mod10":
 			checkDigitAlgo = new Mod10(checksum.get("evens_multiplier").getAsInt(),
