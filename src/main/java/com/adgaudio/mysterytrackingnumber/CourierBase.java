@@ -143,7 +143,7 @@ public class CourierBase {
 	 */
 	static CheckDigitAlgo parseCheckDigitAlgo(JsonObject checksum) {
 		CheckDigitAlgo checkDigitAlgo = null;
-		if (checksum.size() == 0) {
+		if (checksum == null) {
 			return new Dummy();
 		}
 		switch (checksum.get("name").getAsString().toLowerCase()) {
